@@ -25,7 +25,6 @@ public class CustomerEntity {
     private Long customerId;
 
     private String customerName;
-
     private String customerPhone;
 
     public Long getCustomerId() {

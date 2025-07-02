@@ -13,6 +13,8 @@ import com.jackson.spring_database_sharding.repository.CustomerRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
 
 /**
  * CustomerService Class.
@@ -30,24 +32,16 @@ public class CustomerService {
     @Autowired
     private ShardResolver shardResolver;
 
-    @Transactional
+    @Autowired
+    private PlatformTransactionManager transactionManager;
+    
     public CustomerEntity createCustomer(CustomerEntity customer) {
+
+        String shardKey = shardResolver.getShardKey(customer.getCustomerName());
+        ShardContext.setCurrentThread(shardKey);
         try {
-            // Generate customer ID if not provided
-            if (customer.getCustomerName() == null || customer.getCustomerName().isEmpty()) {
-                System.out.println("reach null");
-                customer.setCustomerName("default");
-            }
-
-            System.out.println("not null");
-            // Set shard based on customer ID
-            String shardKey = shardResolver.getShardKey(customer.getCustomerName());
-            System.out.println("shard key" + shardKey);
-            ShardContext.setCurrentThread(shardKey);
-            System.out.println("shard context shard key " + ShardContext.getCurrentThread());
-
-
-            return customerRepository.save(customer);
+            TransactionTemplate template = new TransactionTemplate(transactionManager);
+            return template.execute(status -> customerRepository.save(customer));
         } finally {
             ShardContext.removeCurrentThread();
         }

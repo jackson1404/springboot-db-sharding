@@ -31,7 +31,7 @@ public class ShardResolver {
         int hash = Math.abs(customerName.hashCode());
         int shardIndex = hash % SHARD_COUNT;
 
-        return "shard" + 2;
+        return "shard" + (shardIndex + 1); // This will return "shard1" or "shard2"
     }
 
 
