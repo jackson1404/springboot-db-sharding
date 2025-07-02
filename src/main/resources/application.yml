@@ -4,15 +4,15 @@ spring:
 
   datasource:
     shard1:
-      url: jdbc:postgresql://localhost:5432/shard1-db-test
+      jdbc-url: jdbc:postgresql://localhost:5432/shard1-db-test
       username: postgres
       password: postgres
       driver-class-name: org.postgresql.Driver
 
     shard2:
-      url: jdbc:postgresql://localhost:5434/shard2-db-test
+      jdbc-url: jdbc:postgresql://localhost:5432/customer_db_shard2
       username: postgres
-      password: password
+      password: postgres
       driver-class-name: org.postgresql.Driver
 
   jpa:
