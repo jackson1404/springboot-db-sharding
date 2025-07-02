@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: spring-database-sharding
+
+  datasource:
+    shard1:
+      url: jdbc:postgresql://localhost:5432/shard1-db-test
+      username: postgres
+      password: postgres
+      driver-class-name: org.postgresql.Driver
+
+    shard2:
+      url: jdbc:postgresql://localhost:5434/shard2-db-test
+      username: postgres
+      password: password
+      driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+server:
+  port: 8081
