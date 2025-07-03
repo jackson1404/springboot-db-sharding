@@ -16,6 +16,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import javax.swing.text.html.Option;
+import java.util.Optional;
+
 /**
  * CustomerService Class.
  * <p>
@@ -42,6 +45,21 @@ public class CustomerService {
         try {
             TransactionTemplate template = new TransactionTemplate(transactionManager);
             return template.execute(status -> customerRepository.save(customer));
+        } finally {
+            ShardContext.removeCurrentThread();
+        }
+
+    }
+
+    public CustomerEntity findCustomerById(String customerName) {
+
+        String shardKey = shardResolver.getShardKey(customerName);
+        System.out.println("shard key find id" + shardKey);
+        ShardContext.setCurrentThread(shardKey);
+        try{
+            TransactionTemplate template = new TransactionTemplate(transactionManager);
+            return template.execute( status -> customerRepository.findByCustomerName(customerName)
+                    .orElseThrow(()-> new RuntimeException("Not found")))  ;
         } finally {
             ShardContext.removeCurrentThread();
         }

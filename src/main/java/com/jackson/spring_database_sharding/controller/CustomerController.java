@@ -10,10 +10,7 @@ import com.jackson.spring_database_sharding.entity.CustomerEntity;
 import com.jackson.spring_database_sharding.service.CustomerService;
 import org.hibernate.annotations.Array;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * CustomerController Class.
@@ -33,8 +30,13 @@ public class CustomerController {
     @PostMapping("/createCustomer")
     public CustomerEntity createCustomer(@RequestBody CustomerEntity customer){
         CustomerEntity customerEntity = customerService.createCustomer(customer);
-
         return customerEntity;
+    }
+
+    @GetMapping("/getCustomerByName")
+    public CustomerEntity getCustomerById(@RequestParam String customerName){
+
+        return customerService.findCustomerById(customerName);
     }
 
 }
