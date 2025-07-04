@@ -18,6 +18,8 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.swing.text.html.Option;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -63,12 +65,9 @@ public class CustomerService {
         System.out.println("shard key find id" + shardKey);
         ShardContext.setCurrentThread(shardKey);
         try {
-            Thread.sleep(5000L);
             TransactionTemplate template = new TransactionTemplate(transactionManager);
             return template.execute( status -> customerRepository.findByCustomerId(customerId)
                     .orElseThrow(()-> new RuntimeException("Not found")))  ;
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
         } finally {
             ShardContext.removeCurrentThread();
         }
@@ -118,4 +117,25 @@ public class CustomerService {
         }
     }
 
+    public List<CustomerEntity> getAllCustomers() {
+
+        List<CustomerEntity> allCustomers = new ArrayList<>();
+
+        List<String> allShardList = List.of("shard1", "shard2");
+
+        for ( String shard : allShardList){
+            ShardContext.setCurrentThread(shard);
+            try{
+                TransactionTemplate template = new TransactionTemplate(transactionManager);
+                List<CustomerEntity> customerEntities = template.execute(status -> customerRepository.findAll()  );
+                if(customerEntities != null){
+                    allCustomers.addAll(customerEntities);
+                }
+            } finally {
+                ShardContext.removeCurrentThread();
+            }
+        }
+        return allCustomers;
+
+    }
 }
