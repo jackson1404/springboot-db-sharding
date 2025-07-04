@@ -55,7 +55,6 @@ public class CustomerService {
         } finally {
             ShardContext.removeCurrentThread();
         }
-
     }
 
     public CustomerEntity findCustomerById(String customerId) {
@@ -63,10 +62,13 @@ public class CustomerService {
         String shardKey = shardResolver.getShardKey(customerId);
         System.out.println("shard key find id" + shardKey);
         ShardContext.setCurrentThread(shardKey);
-        try{
+        try {
+            Thread.sleep(5000L);
             TransactionTemplate template = new TransactionTemplate(transactionManager);
             return template.execute( status -> customerRepository.findByCustomerId(customerId)
                     .orElseThrow(()-> new RuntimeException("Not found")))  ;
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         } finally {
             ShardContext.removeCurrentThread();
         }
