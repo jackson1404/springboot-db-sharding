@@ -24,7 +24,7 @@ public class ShardResolver {
 
     private static final int SHARD_COUNT = 2; // Number of database shards
 
-    public String getShardKey(UUID customerId) {
+    public String getShardKey(String customerId) {
         if (customerId == null ) {
             throw new IllegalArgumentException("Customer ID cannot be null or empty");
         }

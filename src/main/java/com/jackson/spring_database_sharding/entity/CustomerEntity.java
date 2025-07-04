@@ -24,24 +24,24 @@ public class CustomerEntity {
 
     @Id
     @Column(name = "customer_id", nullable = false, updatable = false)
-    private UUID customerId;
+    private String customerId;
 
     private String customerName;
     private String customerPhone;
 
     public CustomerEntity() {}
 
-    public CustomerEntity(UUID customerId, String customerName, String customerPhone) {
+    public CustomerEntity(String customerId, String customerName, String customerPhone) {
         this.customerId = customerId;
         this.customerName = customerName;
         this.customerPhone = customerPhone;
     }
 
-    public UUID getCustomerId() {
+    public String getCustomerId() {
         return customerId;
     }
 
-    public void setCustomerId(UUID customerId) {
+    public void setCustomerId(String customerId) {
         this.customerId = customerId;
     }
 

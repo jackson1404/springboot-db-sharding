@@ -35,22 +35,21 @@ public class CustomerController {
         return customerEntity;
     }
 
-//    @GetMapping("/getCustomerByName")
-//    public CustomerEntity getCustomerById(@RequestParam String customerName){
-//
-//        return customerService.findCustomerById(customerName);
-//    }
-//
+    @GetMapping("/getCustomerById")
+    public CustomerEntity getCustomerById(@RequestParam String customerId){
+        return customerService.findCustomerById(customerId);
+    }
+
 
     @PutMapping("/updateCustomerByName")
-    public CustomerEntity updateCustomerByName(@RequestParam("customerId") UUID customerId, @RequestBody CustomerEntity customer){
+    public CustomerEntity updateCustomerByName(@RequestParam("customerId") String customerId, @RequestBody CustomerEntity customer){
 
         return customerService.updateCustomer(customerId, customer);
     }
-//
-//    @DeleteMapping("/deleteCustomer")
-//    public CustomerEntity deleteCustomer(@RequestParam("customerName") String customerName){
-//        return customerService.deleteCustomer(customerName);
-//    }
+
+    @DeleteMapping("/deleteCustomer")
+    public String deleteCustomer(@RequestParam("customerId") String customerId){
+        return customerService.deleteCustomer(customerId);
+    }
 
 }

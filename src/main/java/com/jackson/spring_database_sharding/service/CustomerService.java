@@ -10,6 +10,7 @@ import com.jackson.spring_database_sharding.config.ShardContext;
 import com.jackson.spring_database_sharding.config.ShardResolver;
 import com.jackson.spring_database_sharding.entity.CustomerEntity;
 import com.jackson.spring_database_sharding.repository.CustomerRepository;
+import com.jackson.spring_database_sharding.utility.GenerateId;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,11 +38,14 @@ public class CustomerService {
     private ShardResolver shardResolver;
 
     @Autowired
+    private GenerateId generateId;
+
+    @Autowired
     private PlatformTransactionManager transactionManager;
     
     public CustomerEntity createCustomer(CustomerEntity customer) {
 
-        UUID customerId = UUID.randomUUID();
+        String customerId = generateId.generateCustomerId();
         customer.setCustomerId(customerId);
         String shardKey = shardResolver.getShardKey(customerId);
         ShardContext.setCurrentThread(shardKey);
@@ -55,22 +59,23 @@ public class CustomerService {
     }
 
 
-//    public CustomerEntity findCustomerById(String customerName) {
-//
-//        String shardKey = shardResolver.getShardKey(customerName);
-//        System.out.println("shard key find id" + shardKey);
-//        ShardContext.setCurrentThread(shardKey);
-//        try{
-//            TransactionTemplate template = new TransactionTemplate(transactionManager);
-//            return template.execute( status -> customerRepository.findByCustomerName(customerName)
-//                    .orElseThrow(()-> new RuntimeException("Not found")))  ;
-//        } finally {
-//            ShardContext.removeCurrentThread();
-//        }
-//
-//    }
-//
-    public CustomerEntity updateCustomer(UUID customerId, CustomerEntity customer) {
+    public CustomerEntity findCustomerById(String customerId) {
+
+        String shardKey = shardResolver.getShardKey(customerId);
+        System.out.println("shard key find id" + shardKey);
+        ShardContext.setCurrentThread(shardKey);
+        try{
+            TransactionTemplate template = new TransactionTemplate(transactionManager);
+            return template.execute( status -> customerRepository.findByCustomerId(customerId)
+                    .orElseThrow(()-> new RuntimeException("Not found")))  ;
+        } finally {
+            ShardContext.removeCurrentThread();
+        }
+
+    }
+
+    public CustomerEntity updateCustomer(String customerId, CustomerEntity customer) {
+
         String shardKey = shardResolver.getShardKey(customerId);
         ShardContext.setCurrentThread(shardKey);
 
@@ -89,26 +94,27 @@ public class CustomerService {
             ShardContext.removeCurrentThread();
         }
     }
-//
-//    public CustomerEntity deleteCustomer(String customerName) {
-//        String shardKey = shardResolver.getShardKey(customerName);
-//        ShardContext.setCurrentThread(shardKey);
-//
-//        try {
-//            CustomerEntity customer = customerRepository
-//                    .findByCustomerName(customerName)
-//                    .orElseThrow(() -> new RuntimeException("not found"));
-//
-//            TransactionTemplate template = new TransactionTemplate(transactionManager);
-//            template.execute(status -> {
-//                customerRepository.deleteById(customer.getCustomerId());
-//                return true;
-//            });
-//
-//            return customer;
-//        } finally {
-//            ShardContext.removeCurrentThread();
-//        }
-//    }
+
+    public String deleteCustomer(String customerId) {
+
+        String shardKey = shardResolver.getShardKey(customerId);
+        ShardContext.setCurrentThread(shardKey);
+
+        try {
+            CustomerEntity customer = customerRepository
+                    .findByCustomerId(customerId)
+                    .orElseThrow(() -> new RuntimeException("not found"));
+
+            TransactionTemplate template = new TransactionTemplate(transactionManager);
+            template.execute(status -> {
+                customerRepository.deleteByCustomerId(customer.getCustomerId());
+                return "Deleted";
+            });
+
+            return "Deleted";
+        } finally {
+            ShardContext.removeCurrentThread();
+        }
+    }
 
 }

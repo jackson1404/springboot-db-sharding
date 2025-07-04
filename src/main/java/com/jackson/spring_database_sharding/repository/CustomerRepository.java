@@ -23,7 +23,7 @@ import java.util.UUID;
 @Repository
 public interface CustomerRepository extends JpaRepository<CustomerEntity, Long> {
 
-    String deleteByCustomerName(String customerName);
+    String deleteByCustomerId(String customerName);
 
-    Optional<CustomerEntity> findByCustomerId(UUID customerId);
+    Optional<CustomerEntity> findByCustomerId(String customerId);
 }
