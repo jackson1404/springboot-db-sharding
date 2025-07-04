@@ -58,7 +58,6 @@ public class CustomerService {
 
     }
 
-
     public CustomerEntity findCustomerById(String customerId) {
 
         String shardKey = shardResolver.getShardKey(customerId);
