@@ -6,13 +6,13 @@ spring:
     shard1:
       jdbc-url: jdbc:postgresql://localhost:5432/shard1-db-test
       username: postgres
-      password: root
+      password: postgres
       driver-class-name: org.postgresql.Driver
 
     shard2:
       jdbc-url: jdbc:postgresql://localhost:5432/customer_db_shard2
       username: postgres
-      password: root
+      password: postgres
       driver-class-name: org.postgresql.Driver
 
   jpa:

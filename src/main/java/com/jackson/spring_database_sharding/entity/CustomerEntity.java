@@ -9,6 +9,8 @@ package com.jackson.spring_database_sharding.entity;
 import com.jackson.spring_database_sharding.repository.CustomerRepository;
 import jakarta.persistence.*;
 
+import java.util.UUID;
+
 /**
  * CustomerEntity Class.
  * <p>
@@ -21,17 +23,25 @@ import jakarta.persistence.*;
 public class CustomerEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long customerId;
+    @Column(name = "customer_id", nullable = false, updatable = false)
+    private UUID customerId;
 
     private String customerName;
     private String customerPhone;
 
-    public Long getCustomerId() {
+    public CustomerEntity() {}
+
+    public CustomerEntity(UUID customerId, String customerName, String customerPhone) {
+        this.customerId = customerId;
+        this.customerName = customerName;
+        this.customerPhone = customerPhone;
+    }
+
+    public UUID getCustomerId() {
         return customerId;
     }
 
-    public void setCustomerId(Long customerId) {
+    public void setCustomerId(UUID customerId) {
         this.customerId = customerId;
     }
 
@@ -48,14 +58,6 @@ public class CustomerEntity {
     }
 
     public void setCustomerPhone(String customerPhone) {
-        this.customerPhone = customerPhone;
-    }
-
-    public CustomerEntity(){}
-
-    public CustomerEntity(Long customerId, String customerName, String customerPhone) {
-        this.customerId = customerId;
-        this.customerName = customerName;
         this.customerPhone = customerPhone;
     }
 }

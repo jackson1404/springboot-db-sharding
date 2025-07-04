@@ -12,6 +12,8 @@ import org.hibernate.annotations.Array;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 /**
  * CustomerController Class.
  * <p>
@@ -33,10 +35,22 @@ public class CustomerController {
         return customerEntity;
     }
 
-    @GetMapping("/getCustomerByName")
-    public CustomerEntity getCustomerById(@RequestParam String customerName){
+//    @GetMapping("/getCustomerByName")
+//    public CustomerEntity getCustomerById(@RequestParam String customerName){
+//
+//        return customerService.findCustomerById(customerName);
+//    }
+//
 
-        return customerService.findCustomerById(customerName);
+    @PutMapping("/updateCustomerByName")
+    public CustomerEntity updateCustomerByName(@RequestParam("customerId") UUID customerId, @RequestBody CustomerEntity customer){
+
+        return customerService.updateCustomer(customerId, customer);
     }
+//
+//    @DeleteMapping("/deleteCustomer")
+//    public CustomerEntity deleteCustomer(@RequestParam("customerName") String customerName){
+//        return customerService.deleteCustomer(customerName);
+//    }
 
 }
